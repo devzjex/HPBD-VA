@@ -1,0 +1,8 @@
+node_modules/
+.parcel-cache/
+dist/
+*-safe.*
+temp/
+local/
+src/index.html
+src/pic.jpeg

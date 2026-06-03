@@ -1,0 +1,192 @@
+// ===== PHOTO GALLERY (màn thiệp cuối) =====
+// Lớp phủ toàn màn hình, không chặn click. Các tấm Polaroid được rải ở
+// các góc quanh thiệp, bay vào theo hiệu ứng "pop-in" rồi đung đưa nhẹ.
+
+.photo-gallery {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease-in, visibility 0s linear 0.6s;
+}
+
+.photo-gallery.show {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.6s ease-in;
+}
+
+.polaroid {
+  position: absolute;
+  width: 15.5rem;
+  padding: 0.9rem 0.9rem 2.8rem;
+  margin: 0;
+
+  background: #fdfdfb;
+  border-radius: 3px;
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.45);
+
+  opacity: 0;
+  transform: scale(0.2) rotate(0deg) translateY(6rem);
+
+  img {
+    display: block;
+    width: 100%;
+    height: 14rem;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    text-align: center;
+    color: #ff5fa2;
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+
+  // Bay vào khi gallery được hiện
+  .photo-gallery.show & {
+    animation: polaroid-pop 0.9s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+  }
+
+  // Đung đưa nhẹ liên tục (tách vào lớp trong để không đè transform xoay)
+  &__inner {
+    animation: polaroid-float 6s ease-in-out infinite;
+  }
+}
+
+// Vị trí + góc nghiêng + độ trễ cho từng tấm
+.polaroid--1 {
+  --rot: -9deg;
+  top: 5vh;
+  left: 3vw;
+  .photo-gallery.show & {
+    animation-delay: 0.05s;
+  }
+  .polaroid__inner {
+    animation-duration: 6s;
+  }
+}
+.polaroid--2 {
+  --rot: 8deg;
+  top: 7vh;
+  right: 3vw;
+  .photo-gallery.show & {
+    animation-delay: 0.2s;
+  }
+  .polaroid__inner {
+    animation-duration: 7s;
+  }
+}
+.polaroid--3 {
+  --rot: 7deg;
+  bottom: 6vh;
+  left: 4vw;
+  .photo-gallery.show & {
+    animation-delay: 0.35s;
+  }
+  .polaroid__inner {
+    animation-duration: 6.5s;
+  }
+}
+.polaroid--4 {
+  --rot: -8deg;
+  bottom: 5vh;
+  right: 4vw;
+  .photo-gallery.show & {
+    animation-delay: 0.5s;
+  }
+  .polaroid__inner {
+    animation-duration: 5.5s;
+  }
+}
+.polaroid--5 {
+  --rot: 5deg;
+  top: 42vh;
+  left: 2vw;
+  .photo-gallery.show & {
+    animation-delay: 0.65s;
+  }
+  .polaroid__inner {
+    animation-duration: 7.5s;
+  }
+
+  @media (max-width: 800px) {
+    display: none; // bớt rối trên màn hình nhỏ
+  }
+}
+
+@keyframes polaroid-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(0deg) translateY(6rem);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(var(--rot, 0deg)) translateY(0);
+  }
+}
+
+@keyframes polaroid-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.2rem);
+  }
+}
+
+@media (max-width: 800px) {
+  .polaroid {
+    width: 11rem;
+    padding: 0.6rem 0.6rem 2rem;
+    img {
+      height: 9.5rem;
+    }
+    figcaption {
+      font-size: 1.4rem;
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .polaroid {
+    width: 9rem;
+    img {
+      height: 7.5rem;
+    }
+  }
+  .polaroid--1 {
+    top: 3vh;
+    left: 2vw;
+  }
+  .polaroid--2 {
+    top: 4vh;
+    right: 2vw;
+  }
+  .polaroid--3 {
+    bottom: 4vh;
+    left: 2vw;
+  }
+  .polaroid--4 {
+    bottom: 3vh;
+    right: 2vw;
+  }
+}
+
+// Tôn trọng người dùng tắt hiệu ứng chuyển động
+@media (prefers-reduced-motion: reduce) {
+  .polaroid,
+  .polaroid__inner {
+    animation: none !important;
+    opacity: 1;
+    transform: rotate(var(--rot, 0deg));
+  }
+}
